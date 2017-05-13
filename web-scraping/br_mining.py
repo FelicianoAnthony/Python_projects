@@ -1,8 +1,9 @@
 import pandas as pd
 
+# py file must be in same dir
+import html_scraper_bs4 as bs4_scraper
 
 
-''''These functions use class from html_scraper_bs4.py'''
 def format_team_names():
     
     '''returns a list of team name abbreviations used in baseball reference tables'''
@@ -21,11 +22,12 @@ def format_team_names():
     #use this function to create links
 def create_links(stem, team_names, years, extension):
     
-    '''this function creates links to be iterated over
-       str(steem)
-       [team_name]
-       [year]
-       str(extension)'''
+    '''creates list of links to be iterated over:
+       Args:
+          > str(stem)
+          > [team_name]
+          > [year]
+          > str(extension)'''
 
     links_lst = []
     for y in years:
@@ -37,15 +39,17 @@ def create_links(stem, team_names, years, extension):
 
 #use this function to create csvs
 def html_to_csv(links_list):
-    
-    
+
+	'''takes output of create_links() and saves each team batting df to teamname_year.csv'''
+   
     length_list  =len(links_list)
     count = 0
 
     while count < length_list:
     
         count += 1
-        df = table_scraper.scrape_br_html_table(links_list[count]) #function here 
+        scraper = bs4_scraper.table_scraper()
+        df = scraper.scrape_br_html_table(links_list[count]) #function here 
         file_name = links_list[count][40:48].replace('/', '_')
         df.to_csv('batting_' + file_name + '.csv')
         print(links_list[count])
@@ -54,7 +58,7 @@ def html_to_csv(links_list):
 
 #####example usage#####
 
-#get list of team_names
+#get list of team_name abbreviations used in br tables
 team_names = format_team_names()
 
 #create specific team-year combinations

@@ -5,7 +5,6 @@ import html_scraper_bs4 as bs4_scraper
 
 
 def format_team_names():
-    
     '''returns a list of team name abbreviations used in baseball reference tables'''
     
     names_link = 'http://www.baseball-reference.com/leagues/MLB/2016.shtml'
@@ -19,9 +18,8 @@ def format_team_names():
     
     return team_names 
 
-    #use this function to create links
+
 def create_links(stem, team_names, years, extension):
-    
     '''creates list of links to be iterated over:
        Args:
           > str(stem)
@@ -37,10 +35,8 @@ def create_links(stem, team_names, years, extension):
     return links_lst
 
 
-#use this function to create csvs
 def html_to_csv(links_list):
-
-	'''takes output of create_links() and saves each team batting df to teamname_year.csv'''
+    '''takes output of create_links() and saves each team batting df to teamname_year.csv'''
    
     length_list  =len(links_list)
     count = 0

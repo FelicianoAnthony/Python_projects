@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -35,3 +36,6 @@ def scrape_salary_table(player_url):
     df3 = df2.set_index(keys = ['years'])
     return df3
 
+url = input('Enter a path bitch')
+
+scrape_salary_table(url)

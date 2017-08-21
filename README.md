@@ -2,16 +2,27 @@
 I thought I'd showcase my work in Python and learn how to use git at the same time. Turns out I have way more code than I thought I did! Here's how it's organized:
 
 # HBNL_tools
-Is a work-related folder of modules I've coded to analyze Event-Related Potential (brain wave) data and neuropsychological data.  Each module is for a different data type or project involving PyMongo.
-No assembly required.  
+A collection of modules I've developed to check the integrity of incoming qualitative and quantiative research data, utilize shell scripts to analyze brain wave data, and visualize data extracted from lab database
+Modules used: pandas, bokeh, PyMongo, numpy, subprocess, re, itertools, collections, os, glob...
+
 
 
 # web scraping
-For a project with a friend that involved scraping html tables titled "Team Batting" from http://www.baseball-reference.com and searching data frame based on player name and statistic. 
-Pandas is your friend.
+Project that involved scraping html tables titled "Team Batting" from http://www.baseball-reference.com and creating visualizations from scraped data 
+Modules used: BeautifulSoup, requests, pandas, collections, bokeh...
 
 # tweepy
-Is a folder of tools I've coded that use Twitter's [REST API](http://docs.tweepy.org/en/v3.5.0/api.html) to programatically manage a twitter account.  Built-in rate-limit handling.  Stores 
-[API response](https://gist.github.com/hrp/900964)into data frame and allows user to manipulate columns to find quality followers (e.g. if a user's account was created 3 years ago and they've
-posted 50 tweets since then, they may not be a "quality" follower).  Contains functions to mass unfollow users, follow new users by tweet text/hashtag/location/etc., and post tweets from a text 
-file at fixed intervals. Also contains an example of Twitter's Streaming API to collect "live tweets" as they happen.
+Streaming API: Search twitter for 'live' tweets (i.e. tweets just tweeted) and stores tweet text, location, friends count, etc. into SQL DB.  
+REST API: Programatically manage your twitter account
+	 1) follow users based on tweet text, location, ratio of friends/followers, etc.
+	 2) mass unfollow (i.e. if you follow someone who doesn't follow you back, unfollow them)
+	 3) follow new users based on conditions: stores 'important' parts of Twitter JSON response (http://docs.tweepy.org/en/v3.5.0/api.html) in pandas data frame
+	    --> iterates over each row and prompts user if they would like to follow this twitter user 
+Modules used: tweepy, pandas, sqlite3, json... 
+
+
+To view plots in notebooks: 
+
+Bokeh uses Dynamic JS & github doesn't yet support it so...
+[Go here](http://nbviewer.jupyter.org/) & paste the url of the notebook you want to view
+[Example] (http://nbviewer.jupyter.org/github/FelicianoAnthony/Python_projects/blob/master/web-scraping/br_scraping_walkthrough.ipynb)

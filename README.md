@@ -2,16 +2,16 @@
 I thought I'd showcase my work in Python and learn how to use git at the same time. Turns out I have way more code than I thought I did! Here's how it's organized:
 
 # HBNL_tools
-A collection of modules I've developed to check the integrity of incoming qualitative and quantiative research data, utilize shell scripts to analyze brain wave data, and visualize data extracted from lab database
+A collection of modules I've developed while working at the Henri Begleiter Neurodynamics Laboratory in Brooklyn.  These modules check the integrity of incoming qualitative and quantiative research data, utilize shell scripts to analyze brain wave data, visualize data extracted from lab database, and much more.
 
-## Modules used: pandas, bokeh, PyMongo, numpy, subprocess, re, itertools, collections, os, glob...
+## Packages used: pandas, bokeh, PyMongo, numpy, subprocess, re, itertools, collections, os, glob...
 
 
 
 # web scraping
-Project that involved scraping html tables titled "Team Batting" from http://www.baseball-reference.com and creating visualizations from scraped data 
+Project that involved programtically scraping html tables titled "Team Batting" from http://www.baseball-reference.com for entire seasons and creating visualizations from scraped data 
 
-## Modules used: BeautifulSoup, requests, pandas, collections, bokeh...
+## Packages used: BeautifulSoup, requests, pandas, collections, bokeh...
 
 # tweepy
 **Streaming API**: Search twitter for 'live' tweets (i.e. tweets just tweeted) and stores tweet text, location, friends count, etc. into SQL DB.  
@@ -24,7 +24,7 @@ Project that involved scraping html tables titled "Team Batting" from http://www
 	     3) follow new users based on conditions: stores 'important' parts of Twitter JSON response (http://docs.tweepy.org/en/v3.5.0/api.html) in pandas data frame
 	        --> iterates over each row and prompts user if they would like to follow this twitter user 
 
-## Modules used: tweepy, pandas, sqlite3, json... 
+## Packages used: tweepy, pandas, sqlite3, json... 
 
 
 # To view plots in notebooks: 

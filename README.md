@@ -2,16 +2,16 @@
 I thought I'd showcase my work in Python and learn how to use git at the same time. Turns out I have way more code than I thought I did! Here's how it's organized:
 
 # HBNL_tools
-A collection of modules I've developed to check the integrity of incoming qualitative and quantiative research data, utilize shell scripts to analyze brain wave data, and visualize data extracted from lab database
+## A collection of modules I've developed to check the integrity of incoming qualitative and quantiative research data, utilize shell scripts to analyze brain wave data, and visualize data extracted from lab database
 
-Modules used: pandas, bokeh, PyMongo, numpy, subprocess, re, itertools, collections, os, glob...
+### Modules used: pandas, bokeh, PyMongo, numpy, subprocess, re, itertools, collections, os, glob...
 
 
 
 # web scraping
-Project that involved scraping html tables titled "Team Batting" from http://www.baseball-reference.com and creating visualizations from scraped data 
+## Project that involved scraping html tables titled "Team Batting" from http://www.baseball-reference.com and creating visualizations from scraped data 
 
-Modules used: BeautifulSoup, requests, pandas, collections, bokeh...
+### Modules used: BeautifulSoup, requests, pandas, collections, bokeh...
 
 # tweepy
 **Streaming API**: Search twitter for 'live' tweets (i.e. tweets just tweeted) and stores tweet text, location, friends count, etc. into SQL DB.  
@@ -30,5 +30,6 @@ Modules used: tweepy, pandas, sqlite3, json...
 # To view plots in notebooks: 
 
 Bokeh uses Dynamic JS & github doesn't yet support it so...
-[Go here](http://nbviewer.jupyter.org/) & paste the url of the notebook you want to view
-[Example] (http://nbviewer.jupyter.org/github/FelicianoAnthony/Python_projects/blob/master/web-scraping/br_scraping_walkthrough.ipynb)
+[go here](http://nbviewer.jupyter.org/) & paste the url of the notebook you want to view
+
+[Example](http://nbviewer.jupyter.org/github/FelicianoAnthony/Python_projects/blob/master/web-scraping/br_scraping_walkthrough.ipynb)

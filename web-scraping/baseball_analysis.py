@@ -336,7 +336,6 @@ class html_table_scraper:
             df = pd.read_csv(csv)
             df_lst.append(df)
         teams_df = pd.concat(df_lst)
-        team_df= teams_df.rename(columns = {'YEAR': 'YEARS'})
 
         # create data frame from player salaries
         salaries  = glob(salary_path + '/*csv')
@@ -348,12 +347,17 @@ class html_table_scraper:
 
         # format salary df for merge 
         sal_df1 = sal_df.dropna(axis=0)
-        sal_df1['YEARS'] = sal_df1['YEARS'].astype(int) # see pd_concat_flaot if doesnt work 
-        sal_df2 = sal_df1[sal_df1['YEARS'] == year]
-        sal_df3 = sal_df2[sal_df2['SALARY'] > '0']
+        sal_df2 = sal_df1.rename(columns={'name': 'NAME', 
+                                          'team_name':'TEAM_NAME',
+                                          'years':'YEAR', 
+                                          'salary':'SALARY'})
+
+        sal_df2['YEAR'] = sal_df2['YEAR'].astype(int) # see pd_concat_flaot if doesnt work 
+        sal_df3 = sal_df2[sal_df2['YEAR'] == year]
+        sal_df4 = sal_df3[sal_df3['SALARY'] > '0']
         
         # merges ONLY if name, team, year found in team_df table
-        return pd.merge(team_df, sal_df3, on=['NAME', 'TEAM_NAME', 'YEARS'], how='inner')
+        return pd.merge(teams_df, sal_df4, on=['NAME', 'TEAM_NAME', 'YEAR'], how='inner')
     
     def sum_team_stats(self, df, col_to_sum, team_name):
         ''' sums up a specific statistic for every team and appends that value to a dictionary'''
@@ -452,8 +456,10 @@ class html_table_scraper:
         sal_lst_dollar = ['$' + i for i in sal_lst]
         merged_sal1['PLOT_SALARY'] = sal_lst_dollar
         merged_sal1['SALARY'] = merged_sal1['SALARY'].str.replace(',', '')
-        int_cols = [i for i in merged_sal1.columns if not i.startswith(('NAME', 'POS','TEAM_NAME' ,'year', 'HEIGHT', 'WEIGHT', 'PLOT_SALARY'))]
-        merged_sal1[int_cols] = merged_sal1[int_cols].astype(int)
+        #int_cols = [i for i in merged_sal1.columns if not i.startswith(('NAME','POS', 'TEAM_NAME' ,'year', 'HEIGHT', 'WEIGHT', 'PLOT_SALARY'))]
+        merged_sal1[['G', 'SALARY']] = merged_sal1[['G', 'SALARY']].astype(int)
+        
+        
 
         # filtering by
         reduced_sal = merged_sal1[(merged_sal1['SALARY']  < sal_upper_range) & (merged_sal1['SALARY'] > sal_lower_range)]

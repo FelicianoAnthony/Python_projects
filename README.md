@@ -9,7 +9,7 @@ A collection of modules I've developed while working at the Henri Begleiter Neur
 
 
 # web scraping
-Project that involved programtically scraping html tables titled "Team Batting" from http://www.baseball-reference.com for entire seasons and creating visualizations from scraped data 
+Project that involved programtically scraping html tables titled "Team Batting" from a page [like this](https://www.baseball-reference.com/teams/NYM/2017.shtml) for entire seasons and creating visualizations from scraped data 
 
 ## Packages used: BeautifulSoup, requests, pandas, collections, bokeh...
 

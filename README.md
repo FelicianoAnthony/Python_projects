@@ -31,4 +31,4 @@ Project that involved building a web scraper to download MLB statistics from the
 Bokeh uses Dynamic JS & github doesn't yet support it so...
 [go here](http://nbviewer.jupyter.org/) & paste the url of the notebook you want to view
 
-[Example](http://nbviewer.jupyter.org/github/FelicianoAnthony/Python_projects/blob/master/web-scraping/br_scraping_walkthrough.ipynb)
+[Example](http://nbviewer.jupyter.org/github/FelicianoAnthony/Python_projects/blob/master/HBNL_tools/bokeh_notebooks/sessions_plots.ipynb)

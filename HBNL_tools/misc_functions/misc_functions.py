@@ -50,6 +50,16 @@ def tracker_by_site(filepath, neuro_or_erp):
     return True
 
 
+def rename_sub_ids(path, good_id_str, bad_id_str):
+    '''renames sub ID for ERP data'''
+
+    for r,d,f in os.walk(p):
+        for n in f:
+            if bad_id_str in n:
+                new_name = n.replace(bad_id_str, good_id_str)
+                print('Renaming to ', os.path.join(r,new_name))
+                os.rename(os.path.join(r,n), os.path.join(r,new_name))
+
 def sync_error(ev2_path, dat_path):
     """ Provide **FULL** file pathway of event file and dat file and function will return corrected event file.
        If ev2 file is missing an entire event then program will stop as data is corrupted """

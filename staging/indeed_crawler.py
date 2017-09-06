@@ -29,13 +29,25 @@ def create_soup(url):
     return BeautifulSoup(r.content, "html5lib")
 
 
+def get_unique_identifiers(url):
+    '''get unique identifiers to post to DB'''
+
+    soup = create_soup(url)
+    try:
+        uids_tag = [div for b in soup.find_all('body') for div in b][3]
+        uids = list(uids_tag.stripped_strings)
+        job_title = uids[0]
+        job_company = uids[1].replace(' -', '')
+        return job_company, job_title
+    except Exception as e:
+        print(str(e), '\n', url)
+
+
 def scrape_job_post_links(url):
     ''' returns all links from a query on indeed mobile '''
     
-    # create soup
     soup = create_soup(url)
 
-    # get all job links
     indeed_baseurl = 'https://www.indeed.com/m/'
     h2_tags = soup.find_all('h2', {'class':'jobTitle'})
     job_links = [indeed_baseurl + a['href'] for h in h2_tags for a in h.find_all('a')]
@@ -46,10 +58,8 @@ def indeed_webdriver_crawler(job_name, job_location, int_pages_to_search,
     ''' query indeed mobile & to get all job links from set number of pages.
         returns all scraped links'''
     
-    # init webdriver
     driver = setup_webdriver(path_to_driver)
 
-    # query indeed
     driver.get("https://www.indeed.com/m")
     driver.find_element_by_name('q').clear()
     driver.find_element_by_name('q').send_keys(job_name)
@@ -57,42 +67,30 @@ def indeed_webdriver_crawler(job_name, job_location, int_pages_to_search,
     driver.find_element_by_name('l').send_keys(job_location)
     driver.find_element_by_xpath('/html/body/form/p[3]/input').click()
     
-    # start scraping with most recent posts 
     driver.get(driver.current_url + '&sort=date')
     
-    # set list
     job_links = []
 
-    # unique way to identify first page--- did because of xpath
-    #if driver.current_url.split('=')[2][-5:] != 'start':
     if len(driver.current_url.split('=')) > 2:
-        # get job links from 1st page only 
         first_scrape = scrape_job_post_links(driver.current_url)
         job_links.extend(first_scrape)
-        print('yes1')
-
-        # this is xpath for NEXT button for only first page
         driver.find_element_by_xpath('/html/body/p[22]/a').click()
-        print('yes2')
 
-    # scrape all job links for x amount of pages 
+
     c=0
     for x in range(int(int_pages_to_search)):
         c+=1
-        # get oldest job posting date on the page
         soup = create_soup(driver.current_url)
         last_date = [i.get_text() for i in soup.find_all('span', {'class': 'date'})][-1]
         print('Last date on page', c, 'of', int_pages_to_search, '==>', last_date)
-        
-        # scrape links, add to list, next page
+
         page_urls = scrape_job_post_links(driver.current_url)
         job_links.extend(page_urls)
         time.sleep(2)
         driver.find_element_by_xpath('/html/body/p[22]/a[2]').click()
     
-    # return only unique links 
     no_dupes = list(set(job_links))
-    return no_dupes
+    return no_dupes, driver
 
 def view_jobs(driver, jobs_filtered, sleep_time,
               path_to_driver):
@@ -108,6 +106,7 @@ def view_jobs(driver, jobs_filtered, sleep_time,
 
 
 def create_db_table(full_path_to_db):
+    ''' create database table & names columns '''
 
     conn = sqlite3.connect(full_path_to_db)
     c = conn.cursor()
@@ -121,19 +120,14 @@ def create_db_table(full_path_to_db):
     conn.close()
 
 def post_to_db(jobs_filt, full_path_to_db, sleep_int, 
-               path_to_driver, create_db=None):
+               driver, create_db=None):
     ''' given a list of indeed mobile urls, 
         checks to see if url in DB & if not...
         writes to DB and displays new tab in same window for n amount of time...'''
-    
-    # init webdriver
-    driver = setup_webdriver(path_to_driver)
 
-    # if new db reating DB 
     if create_db:
         create_db_table(full_path_to_db)
     
-    # set up connection BEFORE loop 
     conn = sqlite3.connect(full_path_to_db)
     c = conn.cursor()
 
@@ -142,32 +136,27 @@ def post_to_db(jobs_filt, full_path_to_db, sleep_int,
     for url in jobs_filt:
         driver.get(url)
         soup = create_soup(url)
-        
-        # get additional unique identifiers to post to DB 
-        job_uid = driver.find_element_by_xpath('/html/body/p[1]').text
-        job_title = job_uid.split('\n')[0]
-        job_company = job_uid.split('\n')[1]
 
-        # make sure post doesnt already exist in DB
+        uids = get_unique_identifiers(url)
+        job_title, job_company = uids
+
         c.execute('SELECT * FROM indeed_jobs WHERE (url=? AND company_name=? AND job_title=?)', (driver.current_url, job_company, job_title))
         entry = c.fetchone()
 
         if entry is None:
-            # add to DB if not found 
             c.execute("insert or ignore into indeed_jobs (url, company_name, job_title) values (?, ?, ?)",
                 (driver.current_url, job_company, job_title))
             conn.commit()
             
-            # show that window for x amount of time
-            print ('\n\n', 'New entry added', '\n', job_title, job_company, '\n\n')
+            print ('\n', 'New entry added', '\n', job_title.encode("utf-8"), job_company.encode("utf-8"), '\n')
             new_urls.append(url)
         else:
             print ('Entry found')
 
     len_urls = len(new_urls)
     msg = '{} {} {} {} {}'.format('There are',  len_urls,  
-                                  'urls and this is gonna take', len_urls * sleep_int / 60, 
-                                  'minutes to view. Break it up into chunks by entering number. Enter n to skip')
+                                  'urls and this is going to take', len_urls * int(sleep_int) / 60, 
+                                  'minutes to view. Break it up into chunks by entering number. Enter n to skip.  ')
     ques = input(msg)
     if ques == 'n':
         for u in new_urls:
@@ -176,11 +165,9 @@ def post_to_db(jobs_filt, full_path_to_db, sleep_int,
             time.sleep(int(sleep_int))
     else:
         lens = len(new_urls)
-
         iters = lens / int(ques)
-        
         iters_r = ceil(iters)
-        # should really be a while Looop!!!!!!!!!!!!!
+
         count = 0
         for x in range(iters_r):
             for u in new_urls:
@@ -188,10 +175,11 @@ def post_to_db(jobs_filt, full_path_to_db, sleep_int,
                 concat_url = 'window.open("' + u + '","_blank");'
                 driver.execute_script(concat_url)
                 time.sleep(int(sleep_int))
-                tst.append(u)
                 if count % int(ques) ==0:
+                    print(count, 'of', lens)
                     q = input('Press enter to continue')
                 if count == lens:
+                    input('Press enter ONLY AFTER APPLYING TO JOBS, WINDOW WILL CLOSE')
                     sys.exit(1)
 
 def query_job_posting(url, query_list=False, query_phrase_as_str=False): 
@@ -199,27 +187,21 @@ def query_job_posting(url, query_list=False, query_phrase_as_str=False):
         query_list = turns job post to list of words & if any word in list match, return url 
         query_phrase_as_str = search job post as 1 big list for phrases '''
     
-    # create url and find job description div 
     soup = create_soup(url)
     desc = soup.find_all('div', {'id': 'desc'})
     
-    # get text and flatten list
     desc_lol = [i.get_text().lower().split() for i in desc]
     desc_flattened = [inner for outer in desc_lol for inner in outer]
     
-    # query for 'phrases' in job posting (e.g. 'fixed income')
     if query_phrase_as_str:
         no_split= [i.get_text().lower() for i in desc]
         regex =  [(re.sub(r'[^\w\s]',' ', i)) for i in no_split]
         equal_spaceing = [i.replace('  ', ' ') for i in regex ]
         return [url for i in equal_spaceing if query_phrase_as_str in i]
 
-    # remove all funny characters & empty strings 
     desc_regex = [(re.sub('[^A-Za-z0-9]+', '', i)) for i in desc_flattened]
     desc_query = [i for i in desc_regex if i]
     
-    
-    # if any word matches, return link -- more effective 
     if query_list:
         for i in desc_query:
             if any(word in i for word in query_list):
@@ -234,7 +216,60 @@ def combined_all(job_title, job_company, pages_to_scrape,
     jobs_lst = indeed_webdriver_crawler(job_title, job_company, pages_to_scrape, path_to_driver)
     
     if query_list or query_phrase_as_str:
-        matches =  [query_job_posting(i, query_list=query_list, query_phrase_as_str=query_phrase_as_str) for i in jobs_lst]
-        return post_to_db(matches, db_path, sleep_int, path_to_driver, create_db=first_run)
+        matches =  [query_job_posting(i, query_list=query_list, query_phrase_as_str=query_phrase_as_str) for i in jobs_lst[0]]
+        return post_to_db(matches, db_path, sleep_int, jobs_lst[1], create_db=first_run)
 
-    return post_to_db(jobs_lst, db_path, sleep_int, path_to_driver, create_db=first_run)
+    return post_to_db(jobs_lst[0], db_path, sleep_int, jobs_lst[1], create_db=first_run)
+
+
+def applied_jobs(url, full_path_to_db, new_db=False):
+    ''' create db of jobs already applied to -- use create if 1st time creating db '''
+    
+    uids = get_unique_identifiers(url)
+    
+    if new_db:
+        create_db_table(full_path_to_db)
+        
+    conn = sqlite3.connect(full_path_to_db)
+    c = conn.cursor()
+    
+    c.execute('SELECT * FROM indeed_jobs WHERE (url=? AND company_name=? AND job_title=?)', (url, uids[0], uids[1]))
+    entry = c.fetchone()
+    
+    if entry is None:
+        c.execute("insert or ignore into indeed_jobs (url, company_name, job_title) values (?, ?, ?)",
+            (url, uids[0], uids[1]))
+        conn.commit()
+
+        print ('\n', 'New entry added', '\n', uids[0].encode("utf-8"), uids[1].encode("utf-8"), '\n')
+
+    else:
+        print ('Entry found')
+    
+        
+# user prompts
+apply_or_search = input('Do you want to search for jobs or add job applied to into database? search/add   ')
+
+if apply_or_search == 'search':
+    job_name = input('Enter a job name.  ')
+    job_location = input('Enter a City, State location.  ')
+    pages_to_scrape = input('Enter the number of pages to scrape.  ')
+    sleep_int = input('Enter amount of time alloted to read job posting (in seconds).  ')
+    db_path = input('Enter FULL PATH to folder you want database (must end with .sqlite).  ')
+    driver_path = input('Enter FULL PATH to webdriver.  ')
+    first_run = input('Is this a new database? y/n  ')
+    if first_run == 'y':
+        combined_all(job_name, job_location, pages_to_scrape, db_path, sleep_int,
+                 driver_path, first_run=True)
+    else:
+        combined_all(job_name, job_location, pages_to_scrape, db_path, sleep_int,
+                 driver_path)
+
+if apply_or_search == 'add':
+    applied_url = input('Enter url you want to add to database.  ')
+    db_path_add = input('Enter FULL PATH to folder you want database (must end with .sqlite).  ')
+    new_db_add = input('Is this a new database? y/n  ')
+    if new_db_add == 'y':
+        applied_jobs(applied_url, db_path_add, new_db=True)
+    else: 
+        applied_jobs(applied_url, db_path_add)

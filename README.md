@@ -2,11 +2,18 @@
 I thought I'd showcase my work in Python and learn how to use git at the same time. Turns out I have way more code than I thought I did! Here's how it's organized:
 
 # HBNL_tools
-A collection of modules I've developed while working at the Henri Begleiter Neurodynamics Laboratory in Brooklyn.  These modules check the integrity of incoming qualitative and quantitative research data, utilize shell scripts to analyze brain wave data, visualize data extracted from lab database, and much more.
+A collection of modules & tools I've developed while working at the [Henri Begleiter Neurodynamics Laboratory](http://www.downstate.edu/hbnl/) in Brooklyn.  
+They parse & review electrical brain wave & neuropsychological data, build intuitive query functions for lab database spanning 30+ years of research data, & clean data for statistical analysis.   
 
 ### Packages used: pandas, bokeh, PyMongo, numpy, subprocess, re, itertools, collections, os, glob...
 
+# Django
 
+A simple website created with Django that can be hosted on your local machine
+
+# Staging
+
+Current projects being worked on
 
 # Web scraping
 Project that involved building a web scraper to download MLB statistics from the [”Team Batting tables”](https://www.baseball-reference.com/teams/NYM/2017.shtml) for any combination of teams and seasons and creating visualizations from scraped data 
@@ -15,14 +22,7 @@ Project that involved building a web scraper to download MLB statistics from the
 
 # Twitter Tools
 **Streaming API**: Search twitter for 'live' tweets (i.e. tweets just tweeted) and stores tweet text, location, friends count, etc. into SQL DB.  
-**REST API**: Programatically manage your twitter account...
-
-	     1) follow users based on tweet text, location, ratio of friends/followers, etc.
 	     
-	     2) mass unfollow (i.e. if you follow someone who doesn't follow you back, unfollow them)
-	     
-
-
 ### Packages used: tweepy, pandas, sqlite3, json... 
 
 
@@ -32,3 +32,4 @@ Bokeh uses Dynamic JS & github doesn't yet support it so...
 [go here](http://nbviewer.jupyter.org/) & paste the url of the notebook you want to view
 
 [Example](http://nbviewer.jupyter.org/github/FelicianoAnthony/Python_projects/blob/master/HBNL_tools/bokeh_notebooks/sessions_plots.ipynb)
+

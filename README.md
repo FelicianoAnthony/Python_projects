@@ -13,7 +13,9 @@ A simple website created with Django that can be hosted on your local machine
 
 # Machine Learning 
 
-A simple machine learning model to predict total number of runs scored across all Major League Baseball Teams in a given year 
+A simple machine learning model to predict total number of wins across all Major League Baseball Teams in a given season 
+
+### Packages used: sklearn.linear_model, sklearn.metrics, pandas, matplotlib.pyplot
 
 # Staging
 

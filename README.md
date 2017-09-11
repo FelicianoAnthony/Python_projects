@@ -11,6 +11,10 @@ They parse & review electrical brain wave & neuropsychological data, build intui
 
 A simple website created with Django that can be hosted on your local machine
 
+# Machine Learning 
+
+A simple machine learning model to predict total number of runs scored across all Major League Baseball Teams in a given year 
+
 # Staging
 
 Current projects being worked on

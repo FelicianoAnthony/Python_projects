@@ -3,7 +3,7 @@ I thought I'd showcase my work in Python and learn how to use git at the same ti
 
 # HBNL_tools
 A collection of modules & tools I've developed while working at the [Henri Begleiter Neurodynamics Laboratory](http://www.downstate.edu/hbnl/) in Brooklyn.  
-They parse & review electrical brain wave & neuropsychological data, build intuitive query functions for lab database spanning 30+ years of research data, & clean data for statistical analysis.   
+They parse & review electrical brain wave & neuropsychological data, build intuitive query & visualization functions for lab database spanning 30+ years of research data, & clean data for statistical analysis.   
 
 ### Packages used: pandas, bokeh, PyMongo, numpy, subprocess, re, itertools, collections, os, glob...
 
@@ -37,5 +37,5 @@ Project that involved building a web scraper to download MLB statistics from the
 Bokeh uses Dynamic JS & github doesn't yet support it so...
 [go here](http://nbviewer.jupyter.org/) & paste the url of the notebook you want to view
 
-[Example](http://nbviewer.jupyter.org/github/FelicianoAnthony/Python_projects/blob/master/HBNL_tools/bokeh_notebooks/sessions_plots.ipynb)
+[Example](http://nbviewer.jupyter.org/github/FelicianoAnthony/Python_projects/blob/master/web_scraping/br_scraping_walkthrough.ipynb)
 

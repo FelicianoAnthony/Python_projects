@@ -1,11 +1,6 @@
-# My Portfolio!
-I thought I'd showcase my work in Python and learn how to use git at the same time. Turns out I have way more code than I thought I did! Here's how it's organized:
+# Anthony Feliciano -- Online Portfilio 
 
-# HBNL_tools
-A collection of modules & tools I've developed while working at the [Henri Begleiter Neurodynamics Laboratory](http://www.downstate.edu/hbnl/) in Brooklyn.  
-They parse & review electrical brain wave & neuropsychological data, build intuitive query & visualization functions for lab database spanning 30+ years of research data, & clean data for statistical analysis.   
-
-### Packages used: pandas, bokeh, PyMongo, numpy, subprocess, re, itertools, collections, os, glob...
+Here's a collection of small projects I've developed...
 
 # Django
 
@@ -15,27 +10,10 @@ A simple website created with Django that can be hosted on your local machine
 
 A simple machine learning model to predict total number of wins across all Major League Baseball Teams in a given season 
 
-### Packages used: sklearn.linear_model, sklearn.metrics, pandas, matplotlib.pyplot
+# Random subreddit tweeter
 
-# Staging
+Takes a list of subreddits, goes to rising posts, if post has over 5000 likes then tweets that post & writes to SQL database to avoid duplicate tweets.  Uses reddit API (praw) & twitter API (tweepy)
 
-Current projects being worked on
+# Web Scraping 
 
-# Web scraping
-Project that involved building a web scraper to download MLB statistics from the [”Team Batting tables”](https://www.baseball-reference.com/teams/NYM/2017.shtml) for any combination of teams and seasons and creating visualizations from scraped data 
-
-### Packages used: BeautifulSoup, requests, pandas, collections, bokeh...
-
-# Twitter Tools
-**Streaming API**: Search twitter for 'live' tweets (i.e. tweets just tweeted) and stores tweet text, location, friends count, etc. into SQL DB.  
-	     
-### Packages used: tweepy, pandas, sqlite3, json... 
-
-
-# To view plots in notebooks: 
-
-Bokeh uses Dynamic JS & github doesn't yet support it so...
-[go here](http://nbviewer.jupyter.org/) & paste the url of the notebook you want to view
-
-[Example](http://nbviewer.jupyter.org/github/FelicianoAnthony/Python_projects/blob/master/web_scraping/br_scraping_walkthrough.ipynb)
-
+Scrapes tables + text from [batting statistics](https://www.baseball-reference.com/teams/NYM/2017.shtml) tables for any number of teams or years

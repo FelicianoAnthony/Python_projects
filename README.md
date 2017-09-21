@@ -2,6 +2,9 @@
 
 Here's a collection of small projects I've developed...
 
+# HBNL Tools
+A growing repository of scripts & modules to manage and analyze brain wave research data @ current job
+
 # Django
 
 A website created with Django that can be hosted on your local machine

@@ -112,7 +112,7 @@ def post_tweet(tweepy_keys, tweet_dict, tweet_frequency, db_path):
             
 def reddit_tweeter(tweepy_api_keys, reddit_api_keys, db_path, 
 	               int_tweets_to_tweet, tweet_frequency, subreddit_lst_path):
-    """ have choice of random subreddit tweeter or trump news tweeter """
+    """ posts tweet from random subreddit that has highly voted post"""
     
     r_login = reddit_login(reddit_api_keys)
     count=0

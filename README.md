@@ -16,10 +16,14 @@ A website created with Django that can be hosted on your local machine
 
 A machine learning project to predict total number of wins across all Major League Baseball Teams in a given season 
 
-# Random subreddit tweeter
+# Twitter Scripts
 
-Takes a list of subreddits, goes to rising posts, if post has over 5000 likes then tweets that post & writes to SQL database to avoid duplicate tweets.  Uses reddit API (praw) & twitter API (tweepy)
+wordCloudTweet.py — walkthrough of how to create a word cloud from a user’s history of tweets
+
+random_tweeter.py — select random subreddit from reddit.com from a list, takes most popular posts & tweets word, saves to a database to avoid repeats
 
 # Web Scraping 
 
-Scrapes tables + text from [Team Batting](https://www.baseball-reference.com/teams/NYM/2017.shtml) tables for any number of teams or years.
+OneStop.py —script scrapes job posting links & use web driver to iterate through pages extracting links & saving them to a database to avoid duplicate postings.  Have option to search for specific words in job title.    
+
+baseball_scrape.py —scrapes tables + text from [Team Batting](https://www.baseball-reference.com/teams/NYM/2017.shtml) tables for any number of teams or years.   

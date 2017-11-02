@@ -38,7 +38,7 @@ random_tweeter.py — select random subreddit from reddit.com from a list, takes
 
 # Web Scraping 
 
-OneStop.py — interactive script that uses a web driver to query [Career One Stop](https://www.careeronestop.org/JobSearch/job-Search.aspx) for job postings, creates database to avoid showing duplicate postings, iterate through unique postings by opening them 10 at a time each in a new web driver tab, tabs that aren't x'd out when list is finished are the jobs you want to apply to.  Second database to store jobs applied to and creates new folder containing a screenshot of the entire webpage.
+OneStop.py — interactive script that uses a web driver to query [Career One Stop](https://www.careeronestop.org/JobSearch/job-Search.aspx) for job postings, creates database to avoid showing duplicate postings, iterate through unique postings by opening them 10 at a time each in a new web driver tab, tabs that aren't x'd out when list is finished are the jobs you want to apply to.  Second database to store jobs applied to and creates new folder containing a screenshot of webpage with job description.
  
 
 baseball_scrape.py —scrapes tables + text from [Team Batting](https://www.baseball-reference.com/teams/NYM/2017.shtml) tables for any number of teams or years.   

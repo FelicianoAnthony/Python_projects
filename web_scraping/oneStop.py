@@ -9,6 +9,8 @@ import json
 import os
 import sys
 import time
+import numpy as np
+from PIL import Image
 
 def setup_webdriver(path_to_driver): 
     """set up webdriver"""
@@ -66,6 +68,17 @@ def create_db_table(full_path_to_db):
     conn.commit()
     conn.close()
 
+def create_db_table_applied(full_path_to_db):
+    """create database table & names columns"""
+    conn = sqlite3.connect(full_path_to_db)
+    c = conn.cursor()
+    c.execute('''CREATE TABLE career_jobs_applied
+        (id integer primary key, data, 
+        url text)''')
+
+    conn.commit()
+    conn.close()
+
 def filterJobTitles(jobsDict, keywordsList, all_=True):
     """any=True, all=False = matches all 
        any=True, all=True = matches any"""
@@ -99,6 +112,7 @@ def filterJobTitles(jobsDict, keywordsList, all_=True):
 def addToDb(dbPath, jobsDict):
 
     uniqueURLS = []
+    count = 0
     for k,v in jobsDict.items():
         URL = k
         jobTitle = v[0]
@@ -114,11 +128,83 @@ def addToDb(dbPath, jobsDict):
             c.execute("insert or ignore into career_jobs (company_name, job_title) values (?, ?)", (jobCompany, jobTitle))
             conn.commit()
             uniqueURLS.append(URL)
-            print('\nNew Entry added\n{} - {}'.format(jobTitle, jobCompany))
+            count+=1
+            print('\n{} || New Entry added\n{} - {}'.format(count, jobTitle, jobCompany))
         else:
             print ('\n>>>>>>>>>Entry found<<<<<<<<<\n', jobTitle, jobCompany)
             
     return uniqueURLS
+
+def screenshot_stitch(driver, fname):
+    
+
+    js = 'return Math.max( document.body.scrollHeight, document.body.offsetHeight,  document.documentElement.clientHeight,  document.documentElement.scrollHeight,  document.documentElement.offsetHeight);'
+
+    px = driver.execute_script(js)
+    rangee = px / 700
+    #browser.execute_script("window.scrollTo(0, %s);" % 500)
+    
+    base_name = '/Users/Anthony/Desktop/python_projects_clean/selenium/db/'
+    os.makedirs(base_name + fname)
+    count=0
+    jpg_paths = []
+    for i in range(round(rangee)):
+        driver.execute_script("window.scrollTo(0, %s);" % count)
+        #time.sleep(5)
+        jpg_path = base_name + fname + '/' + fname + '_' +  str(i) + '.png'
+        driver.save_screenshot(jpg_path)
+        print("Saving job description screenshot in\n> {}\n\n".format(jpg_path))
+        jpg_paths.append(jpg_path)
+        count+= 700
+    return jpg_paths
+
+
+def combine_png(png_paths):
+
+    imgs    = [ Image.open(i) for i in png_paths ]
+    dir_name = os.path.dirname(png_paths[0])
+    fname = os.path.basename(png_paths[0])[:-6]
+    full_path = dir_name + '/' + fname + '.png'
+
+
+    # pick the image which is the smallest, and resize the others to match it (can be arbitrary image shape here)
+    min_shape = sorted( [(np.sum(i.size), i.size ) for i in imgs])[0][1]
+    imgs_comb = np.hstack( (np.asarray( i.resize(min_shape) ) for i in imgs ) )
+
+
+    # for a vertical stacking it is simple: use vstack
+    imgs_comb = np.vstack( (np.asarray( i.resize(min_shape) ) for i in imgs ) )
+    imgs_comb = Image.fromarray( imgs_comb)
+    imgs_comb.save(full_path)
+    print("Saving concatenated job description screenshot in\n> {}\n\n".format(full_path))
+    
+    [os.remove(i) for i in png_paths]
+
+def driver_screenshot(driver_path, url, fname):
+    
+    driver= setup_webdriver(driver_path)
+    driver.get(url)
+    paths = screenshot_stitch(driver,fname)
+    combine_png(paths)
+
+
+def addToDbApplied(driver_path, dbPath, url, fname):
+    
+    conn = sqlite3.connect(dbPath)
+    c = conn.cursor()
+
+    c.execute('SELECT * FROM career_jobs_applied WHERE (url=?)', (url,))
+    entry = c.fetchone()
+    
+    
+    if entry is None:
+        c.execute("insert or ignore into career_jobs_applied (url) values (?)", (url,))
+        conn.commit()
+        print('\nNew Entry added\n{}'.format(url))
+        driver_screenshot(driver_path, url, fname)
+    else:
+        print ('\n>>>>>>>>>Entry found<<<<<<<<<\n', url)
+    
 
 def scrapeOneStop(driverPath, jobTitle, jobLocation, dbPath, firstTable=None, 
                   all_=None, keywordsList=None):
@@ -152,9 +238,25 @@ def scrapeOneStop(driverPath, jobTitle, jobLocation, dbPath, firstTable=None,
 
 
 # user inputs 
+dbApply = input('\nCheck to see if job was already applied to? y/n\n> ')
+driverPath = input('\nEnter FULL PATH to web driver\n> ')
 dbPath = input('\nEnter FULL PATH to databse ending with .sqlite\n> ')
 dbCreate = input('\nIs this a new database? true/false\n> ')
-driverPath = input('\nEnter FULL PATH to web driver\n> ')
+dbCreateBoolApply = json.loads(dbCreate)
+if dbApply == 'y':
+    urlApply = input('\nEnter url to be added to database.\n> ')
+    screenshotFname = input('\nEnter filename for screenshot.\n> ')
+    if dbCreateBoolApply == True:
+        create_db_table_applied(dbPath)
+        addToDbApplied(driverPath, dbPath, urlApply, screenshotFname)
+        #driver_screenshot(driverPath, urlApply, screenshotFname)
+        sys.exit(1)
+    else:
+        #addToDbApplied(dbPath, urlApply)
+        addToDbApplied(driverPath, dbPath, urlApply, screenshotFname)
+        #driver_screenshot(driverPath, urlApply, screenshotFname)
+        sys.exit(1)
+
 jobTitle = input('\nEnter job title to search\n> ')
 jobLocation = input('\nEnter job location\n> ')
 filterOrNot = input('\nFilter job titles by keywords? y/n\n> ')
@@ -190,10 +292,8 @@ if filterOrNot in ['y', 'yes']:
 
 else:
     if dbCreate == 'true':
-        print('other else')
         scrapeOneStop(driverPath, jobTitle, jobLocation, dbPath, firstTable=dbCreateBool)
         input('Press enter to exit')
     else:
-        print('other other else')
         scrapeOneStop(driverPath, jobTitle, jobLocation, dbPath)
         input('Press enter to exit')
